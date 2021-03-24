@@ -9,6 +9,29 @@ Last Update: 2021/03/25
 - Python3
 - Tensorflow
 
+## 大まかな開発ステップ
+> 1.人物検出モジュール作成
+>> 構想:<br>
+>> 動画像からフレーム毎に切り出し、HoG+SVMによる人物検出した後、検出領域の切り取り&保存
+
+> 2.HRNet作成
+>> 構想:<br>
+>> 主に[repo](https://github.com/stefanopini/simple-HRNet)を参考にアーキテクチャを決定し作成
+
+> 3.訓練モジュール作成
+
+> 4.ジョイント描写モジュール
+>> 構想:<br>
+>> 情報収集中
+
+> 5.歩容認識モジュール作成
+>> 構想:<br>
+>> [link](https://ipsj.ixsq.nii.ac.jp/ej/index.php?active_action=repository_view_main_item_detail&page_id=13&block_id=8&item_id=186786&item_no=1)を参考に作成
+
+> 6.インスタンスセグメンテーションの取り入れ
+>> 構想:<br>
+>> 情報収集中
+
 ## プロトタイプモデルアーキテクチャ決定について
 |  決定事項  |  手法  |
 | ---- | ---- |
