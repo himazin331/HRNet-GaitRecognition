@@ -14,6 +14,6 @@ Last Update: 2021/03/25
 | ---- | ---- |
 |  HRNet入力データサイズ  |  人物検出resultのバウンディングボックスサイズを基に決定 |
 |  各レイヤーのHP  |  [repo](https://github.com/stefanopini/simple-HRNet)のmodels/hrnet.pyより決定  |
-| ステージ数 | [link]https://jingdongwang2017.github.io/Projects/HRNet)の図に基づく
+| ステージ数 | [link](https://jingdongwang2017.github.io/Projects/HRNet)の図に基づく
 
 モデルアーキテクチャは状況に応じて変更する。
