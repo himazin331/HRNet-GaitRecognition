@@ -12,11 +12,11 @@ for c in os.listdir(data_dir):
     d = os.path.join(data_dir, c)
     mv = cv2.VideoCapture(d)
 
-    c = c[:-4]
+    c = c[:-4] + "a"
     os.makedirs(c, exist_ok=True)
-    out_dir = os.path.join(os.getcwd(), c+"\\")
-    for f in range(int(mv.get(cv2.CAP_PROP_FRAME_COUNT))-1):
-        print(out_dir+c+str(f)+".jpg")
+    out_dir = os.path.join(os.getcwd(), c + "\\")
+    for f in range(int(mv.get(cv2.CAP_PROP_FRAME_COUNT)) - 1):
+        print(out_dir + c + str(f) + ".jpg")
 
         # フレーム取得
         _, frame = mv.read()
@@ -26,5 +26,5 @@ for c in os.listdir(data_dir):
         if type(found) is np.ndarray:
             # 保存
             for (x, y, w, h) in found:
-                cv2.imwrite(out_dir+str(f)+".jpg", frame[y:y+h, x:x+w])
+                cv2.imwrite(out_dir + str(f) + ".jpg", frame[y:y + h, x:x + w])
     mv.release()
