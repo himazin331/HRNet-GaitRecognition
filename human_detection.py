@@ -1,4 +1,3 @@
-import sys
 import os
 
 import cv2
@@ -7,6 +6,7 @@ import random
 
 from sklearn import model_selection as ms
 from sklearn import metrics
+
 
 class SVM():
     def __init__(self):
@@ -42,21 +42,22 @@ class SVM():
         _, ypred = self.svm.predict(x)
         return metrics.accuracy_score(y, ypred)
 
+
 class HOG():
     def __init__(self, win_size, block_size, block_stride, cell_size, num_bins):
-        self.win_size = win_size # 検出対象の最小領域
-        self.block_size = block_size # ボックスサイズ
-        self.block_stride = block_stride # ストライドサイズ
-        self.cell_size = cell_size # セルサイズ
-        self.num_bins = num_bins # ビン個数
+        self.win_size = win_size  # 検出対象の最小領域
+        self.block_size = block_size  # ボックスサイズ
+        self.block_stride = block_stride  # ストライドサイズ
+        self.cell_size = cell_size  # セルサイズ
+        self.num_bins = num_bins  # ビン個数
 
         # HOG
         self.hog = cv2.HOGDescriptor(win_size, block_size, block_stride, cell_size, num_bins)
 
         # Postiveデータ
-        self.xpos = [] # 人物のHOG特徴量
+        self.xpos = []  # 人物のHOG特徴量
         # Negativeデータ
-        self.xneg = [] # 人物以外のHOG特徴量
+        self.xneg = []  # 人物以外のHOG特徴量
 
     def hog(self):
         return self.hog
@@ -66,38 +67,38 @@ class HOG():
         # 正解データセットから400枚分ランダムに取り込み
         for i in random.sample(range(1, 901), 400):
             # 読み込み
-            pos_data_filename = os.getcwd()+"\\pedestrian_dataset\\true\\per{:05}.ppm".format(i)
+            pos_data_filename = os.getcwd() + "\\pedestrian_dataset\\true\\per{:05}.ppm".format(i)
             pos_data = cv2.imread(pos_data_filename)
             
             # HOG特徴量抽出しリストセット
             self.xpos.append(self.hog.compute(pos_data, (64, 64)))
         # データ加工
         self.xpos = np.array(self.xpos, dtype=np.float32)
-        ypos = np.ones(self.xpos.shape[0], dtype=np.int32) # Positiveラベル
+        ypos = np.ones(self.xpos.shape[0], dtype=np.int32)  # Positiveラベル
 
         # ROI
-        hroi = pos_data.shape[0] # 高さ
-        wroi = pos_data.shape[1] # 幅
+        hroi = pos_data.shape[0]  # 高さ
+        wroi = pos_data.shape[1]  # 幅
 
-        negfilename = os.getcwd()+"\\pedestrian_dataset\\false\\"
+        negfilename = os.getcwd() + "\\pedestrian_dataset\\false\\"
         # 不正解データの取り込み
         for fn in os.listdir(negfilename):
             # 読み込み
-            filename = negfilename+fn 
+            filename = negfilename + fn
             img = cv2.imread(filename)
             img = cv2.resize(img, (512, 512))
 
             # ROIのHOG特徴量セット(5回実行)
             for j in range(5):
-                rand_y = random.randint(0, img.shape[0] - hroi) # Y座標
-                rand_x = random.randint(0, img.shape[1] - wroi) # X座標
-                roi = img[rand_y:rand_y + hroi, rand_x:rand_x + wroi, :] # ROI
+                rand_y = random.randint(0, img.shape[0] - hroi)  # Y座標
+                rand_x = random.randint(0, img.shape[1] - wroi)  # X座標
+                roi = img[rand_y:rand_y + hroi, rand_x:rand_x + wroi, :]  # ROI
 
                 # HOG特徴量抽出しリストセット
                 self.xneg.append(self.hog.compute(roi, (64, 64)))
         # データ加工
         self.xneg = np.array(self.xneg, dtype=np.float32)
-        yneg = -np.ones(self.xneg.shape[0], dtype=np.int32) # Negativeラベル
+        yneg = -np.ones(self.xneg.shape[0], dtype=np.int32)  # Negativeラベル
 
         # 1つに集約
         X = np.concatenate((self.xpos, self.xneg))
@@ -105,6 +106,7 @@ class HOG():
 
         # データセット(訓練データとテストデータに分割)
         return ms.train_test_split(X, Y, test_size=0.2, random_state=42), (hroi, wroi)
+
 
 def main():
     
@@ -121,7 +123,7 @@ def main():
 
     data_dir = os.path.join(os.getcwd(), "data")
 
-    #! エラー発生
+    # ! エラー発生
     """
     rho, _, _ = svm.getDecisionFunction(0)
     sv = svm.getSupportVectors()
@@ -136,15 +138,15 @@ def main():
 
         c = c[:-4]
         os.makedirs(c, exist_ok=True)
-        out_dir = os.path.join(os.getcwd(), c+"\\")
-        for f in range(int(mv.get(cv2.CAP_PROP_FRAME_COUNT))-1):
-            print(out_dir+c+str(f)+".jpg")
+        out_dir = os.path.join(os.getcwd(), c + "\\")
+        for f in range(int(mv.get(cv2.CAP_PROP_FRAME_COUNT)) - 1):
+            print(out_dir + c + str(f) + ".jpg")
 
             # フレーム取得
             _, frame = mv.read()
 
-            for ystart in np.arange(0, frame.shape[0], stride): # Y方向
-                for xstart in np.arange(0, frame.shape[1], stride): # X方向
+            for ystart in np.arange(0, frame.shape[0], stride):  # Y方向
+                for xstart in np.arange(0, frame.shape[1], stride):  # X方向
                     # フレーム高さをストライドフィルタが超えたらY増分
                     if ystart + hroi > frame.shape[0]:
                         continue
@@ -153,21 +155,22 @@ def main():
                         continue
 
                     # ROI切り出し
-                    roi = frame[ystart:ystart+hroi, xstart:xstart+wroi, :]
+                    roi = frame[ystart:ystart + hroi, xstart:xstart + wroi, :]
                     # HOG特徴量抽出
                     feat = np.array([h.hog.compute(roi, (64, 64))])
                     # SVM推定
                     _, ypred = svm.predict(feat)
 
-                    #todo ypred=1のfeatを出力
+                    # todo ypred=1のfeatを出力
                     """
                     human, _ = h.hog.detectMultiScale(frame)
                     if type(human) is np.ndarray:
                         for (x, y, w, h) in human:
                             cv2.rectangle(frame, (x, y),(x+w, y+h),(0,50,255), 3)
                     """
-            #cv2.imwrite(out_dir+str(f)+".jpg", frame)
+            # cv2.imwrite(out_dir+str(f)+".jpg", frame)
         mv.release()
+
 
 if __name__ == "__main__":
     main()
