@@ -3,7 +3,7 @@ We will use a model called `HRNet`, which is used for human posture estimation, 
 
 [1] Gait recognition is a technology that authenticates individuals based on their posture, arm swing, and stride length while walking.
 
-https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/558214/f0d75c71-653c-3c83-b870-6907229b74d1.png
+![image](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/558214/f0d75c71-653c-3c83-b870-6907229b74d1.png)
 
 ## Introduction
 In preparation
